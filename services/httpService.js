@@ -1,8 +1,9 @@
 import {
 	isDebug,
-	serverUrl,
-	timeout
-} from "./constants.js";
+	timeout,
+	serverUrl
+} from './constants.js'
+
 class HttpService {
 	constructor() {
 		this.serverUrl = serverUrl;
@@ -20,14 +21,14 @@ class HttpService {
 				url: realUrl,
 				method: type,
 				header: this.header,
-				timeout:this.timeout,
+				timeout: this.timeout,
 				data: params,
 				success: (res) => {
 					if (this.isDebug) {
 						console.log(realUrl, res)
 					}
 					if (res.statusCode === 200) {
-						this.successHandler(resolve, res.data)
+						this.successHandler(resolve, reject, res.data)
 					} else {
 						this.errorHandler(reject, res.statusCode)
 					}
@@ -47,7 +48,7 @@ class HttpService {
 		for (let key in params) {
 			formData.append(key, params[key]);
 		}
-		return new Promise((resole, reject) => {
+		return new Promise((resolve, reject) => {
 			uni.uploadFile({
 				url: realUrl,
 				formData: formData,
@@ -75,6 +76,7 @@ class HttpService {
 		resolve(data)
 	}
 	errorHandler(reject, code) {
+
 		let errMsg;
 		switch (code) {
 			case 500:
@@ -105,8 +107,9 @@ class HttpService {
 
 
 		//...显示toast
-		resject(code)
+		reject(code)
 	}
 }
+
 
 export default new HttpService();
